@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      const canPlaceFlowers = function (flowerbed, n) {
+        const len = flowerbed.length;
+        let max = 0;
+        let gap = 1;
+        for (let i = 0; i < len; i++) {
+          if (flowerbed[i] == 0) {
+            gap = gap + 1;
+            if (i == len - 1) {
+              //最后一个如果是0，需要增加一个0，再计算
+              gap = gap + 1;
+              max = max + Math.floor((gap - 1) / 2);
+            }
+          } else {
+            max = max + Math.floor((gap - 1) / 2);
+            gap = 0;
+          }
+        }
+        return max >= n;
+      };
+      console.log(canPlaceFlowers([1, 0, 0, 0, 0, 1], 2));
+
+      const maxProfit = function (prices) {
+        //[7, 1, 5, 7, 10, 8]
+        //[-6,4,2,3,-2]
+        //[1,2,3,4,5]
+        //[1,1,1,1]
+        let len = prices.length;
+        let profit = 0;
+        let prev = prices[0];
+        for (let i = 1; i < len; i++) {
+          if (prices[i] > prev) {
+            profit = profit + prices[i] - prev;
+          }
+          prev = prices[i];
+        }
+        return profit;
+      };
+      console.log(maxProfit([7, 1, 5, 3, 6, 4]));
+      var largestNumber = function (nums) {
+        nums.sort((a, b) => {
+          return `${b}${a}` - `${a}${b}`;
+        });
+        if (nums[0] == 0) return "0";
+        return nums.join("");
+      };
+      console.log(largestNumber([3, 30, 34, 5, 9]));
+      const removeKdigits = function (num, k) {
+        const len = num.length;
+        let count = 0;
+        let left = [];
+        let prev = 0;
+        for (let i = 1; i < len; i++) {
+          if (count < k) {
+            if (num[prev] == 0) {
+              prev = i;
+              continue;
+            }
+            if (num[i] < num[prev]) {
+              prev = i;
+            }
+            count++;
+          } else {
+            left.push(num[i]);
+          }
+        }
+        if (count < k) {
+          return "0";
+        }
+        let leftstr = left.length == 0 ? "0" : left.join("");
+        return num[prev] == "0" ? leftstr : num[prev] + leftstr;
+      };
+      console.log(removeKdigits("9", 1));
+    </script>
+  </body>
+</html>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+<script>
+const dataObjArray = [
+  {"key":'name',"value":'light'},
+  {"key":'age',"value":18},
+  {"key":'sex','value':'male'}
+]
+console.log(Object.fromEntries([...dataObjArray.map(obj=>Object.values(obj))]))
+console.log(dataObjArray.reduce((obj1,obj2)=>({...obj1,[obj2.key]:obj2.value}),{}))
+
+function search(nums, target) {
+  let left = 0
+  let right = nums.length-1
+  while(left <= right){
+      const middle = Math.floor((left+right)/2)
+      if(nums[middle] > target){
+          right = middle + 1
+      }else if(nums[middle] < target){
+          left = middle-1
+      }else{
+          return middle
+      }
+  }
+  return -1
+}
+const nums = [-1,0,3,5,9,12], target = 9
+//const result = search(nums,target)
+
+// 一个无序数组，有正数，负数，0，求最大连续数字之和。例如 [1,-2,-1,0,-6,2,-3,4,4,1,-2,1] 结果是 9
+// 这里的思路是，求连续数字之和，
+
+const maxSum = function(nums){
+    // const len = nums.length
+    // const dp = [nums[0]]
+    // let max = nums[0]
+    // for(let i = 1; i<len;i++){
+    //     dp[i] = Math.max(dp[i-1]+nums[i] , nums[i])
+    //     max = Math.max(max,dp[i])
+    // }
+    // return max
+    const len = nums.length
+    let prev = nums[0] , cur =  nums[0]
+    for(let i=1;i<len;i++){
+        const tmp = prev > 0 ? (prev + nums[i]) : nums[i]
+        prev = tmp
+        cur = Math.max(tmp,cur)
+    }
+    return cur
+}
+// console.log(maxSum([1,-2,-1,0,-6,2,-3,4,4,1,-2,1]))
+console.log(maxSum([5,4,-1,7,8]))
+
+const climp = function(n){
+    // const dp = [0,1,2]
+    // for(let i=3;i<=n;i++){
+    //     dp[i] = dp[i-1] + dp[i-2]
+    // }
+    // return dp[n]
+    let prev = 1 , cur = 1
+    for(let i=2;i<=n;i++){
+        const tmp = prev + cur
+        prev = cur
+        cur = tmp
+    }
+    return cur
+}
+
+console.log(climp(5))
+
+const maxProfit = function(prices){
+    const len = prices.length
+    const dp = [prices[0]]
+    let max = 0
+    for(let i = 1 ;i<len;i++){
+        // 每个位置的最低成本
+        dp[i] = Math.min(dp[i-1],prices[i])
+        // 每个位置的收益，prices[i] - dp[i-1]
+        max = Math.max( max , prices[i] - dp[i-1] )
+    }  
+    return max
+}
+
+console.log(maxProfit([7,1,5,3,6,4]))
+
+var fib = function(n) {
+    const dp = [0,1,1]
+    if(n <3){
+        return dp[n]
+    }else{
+        for(let i = 3;i<=n;i++){
+            dp[i] = dp[i-1] + dp[i-2]
+        }
+        return dp[n]
+    }
+};
+
+console.log(fib(4))
+
+const message = function(nums){
+    // const len = nums.length
+    // if(len < 3){
+    //     return Math.max(...nums)
+    // }
+    // const dp = [nums[0],Math.max(nums[0],nums[1])]
+    // let max = Math.max(...dp)
+    // for(let i = 2; i<len;i++){
+    //     // dp[i] = Math.max(dp[i-2] , dp[i-3]||0) + nums[i]
+    //     dp[i] = Math.max(dp[i-1], dp[i-2] + nums[i])
+    //     max = Math.max(max,dp[i])
+    // }
+    // return max
+
+    const len = nums.length
+    let prev = 0, cur = nums[0];
+    for (let i = 1; i < len; i++) {
+        let tmp = Math.max(cur, prev + nums[i]);
+        prev = cur;
+        cur = tmp;
+    }
+    return cur;
+}
+
+console.log(message([2,1,4,5,3,1,1,3,4]))
+
+//"babaccad" => "bab" ; "bbbc"=>"bb"
+const longestPalindrome = function(s){
+    const strs = s.split('')
+    const len = strs.length
+    if(len <= 1) return s
+    let max = [strs[0]]
+    for(let i = 1 ; i<len;i++){
+        let dMax = [],sMax = []
+        let d = true, s = true
+        let j = 0
+        while(i-j-1 >=0 || i+j<len){
+            if(!d && !s){
+                break
+            }
+            if(d && strs[i+j] === strs[i-j-1]){
+                dMax = [strs[i-j-1],...dMax,strs[i+j]]
+            }else{
+                d = false
+            }
+            if(s && strs[i+j] === strs[i-j]){
+                sMax = j==0 ? [strs[i]] : [strs[i-j] , ...sMax,strs[i+j]]
+            }else{
+                s = false
+            }
+            j++
+        }
+        const tMax = dMax.length > sMax.length ? dMax : sMax
+        max = max.length >= tMax.length ? max : tMax
+    }
+    return max.join('')
+};
+
+const longestPalindrome2 = function(s) {
+    const strs = s.split('')
+    const len = strs.length
+    if(len <= 1) return s
+    let maxl = 0
+    let maxr = 1
+    for(let i = 1 ; i<len;i++){
+        let dl = i
+        let dr = i
+        let sl = 0
+        let sr = 0
+        let d = true, s = true
+        let j = 0
+        while(i-j-1 >=0 || i+j<len){
+            if(!d && !s){
+                break
+            }
+            if(d && strs[i+j] === strs[i-j-1]){
+                dl -= 1
+                dr += 1
+            }else{
+                d = false
+            }
+            if(s && strs[i+j] === strs[i-j]){
+                if(j==0){
+                   sl = i
+                   sr = i+1
+                }else{
+                    sl -= 1
+                    sr += 1
+                }
+            }else{
+                s = false
+            }
+            j++
+        }
+        let [tl,tr] = (dr-dl) >= (sr-sl)  ? [dl,dr] : [sl,sr];
+
+        [maxl,maxr] = (maxr-maxl) >= (tr-tl) ? [maxl,maxr] : [tl,tr]
+    }
+    return s.slice(maxl,maxr)
+};
+
+console.log(longestPalindrome2("aaa"))
+</script>
+</body>
+</html>
