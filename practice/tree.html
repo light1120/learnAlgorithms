@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // 2叉搜索树 BST
+      // 特点，排序树 左小右大
+      class Tree {
+        value = null;
+        right = null;
+        left = null;
+
+        constructor(data) {
+          this.value = data;
+        }
+
+        addNode(data) {
+          if (!this.value) {
+            this.value = data;
+          } else if (data < this.value) {
+            if (this.left == null) {
+              this.left = new Tree(data);
+            } else {
+              this.left.addNode(data);
+            }
+          } else if (data > this.value) {
+            if (this.right == null) {
+              this.right = new Tree(data);
+            } else {
+              this.right.addNode(data);
+            }
+          } else {
+            console.log(`node: ${data} exist`);
+          }
+          return this;
+        }
+
+        removeNode(data) {
+          if (data == this.value) {
+            if (!this.right && !this.left) {
+              return null;
+            } else {
+              if (this.left) {
+                const maxLeft = maxTreeValue(this.left);
+                this.value = maxLeft;
+                this.left = this.left.removeNode(maxLeft);
+              } else {
+                const minRight = minTreeValue(this.right);
+                this.value = minRight;
+                this.right = this.right.removeNode(minRight);
+              }
+            }
+          } else if (data > this.value) {
+            if (this.right) {
+              this.right = this.right.removeNode(data);
+            }
+          } else {
+            if (this.left) {
+              this.left = this.left.removeNode(data);
+            }
+          }
+          return this;
+        }
+
+        depthFirstTraversal() {
+          // 前序 ，中序，后序
+          if (this.value) {
+            if (this.left) {
+              this.left.depthFirstTraversal();
+            }
+            // 中序
+            console.log(this.value);
+            if (this.right) {
+              this.right.depthFirstTraversal();
+            }
+          }
+        }
+
+        breadthFirstTraversal() {
+          if (!this.value) {
+            return null;
+          }
+          const queue = [];
+          queue.push(this);
+          while (queue.length > 0) {
+            const node = queue.shift();
+            console.log(node.value);
+            if (node.left) {
+              queue.push(node.left);
+            }
+            if (node.right) {
+              queue.push(node.right);
+            }
+          }
+        }
+
+        reverse() {
+          if (this.value) {
+            [this.left, this.right] = [this.right, this.left];
+            if (this.left) {
+              this.left.reverse();
+            }
+            if (this.right) {
+              this.right.reverse();
+            }
+          }
+        }
+      }
+
+      const maxTreeValue = (root) => {
+        if (root.right) {
+          return maxTreeValue(root.right);
+        }
+        return root.value;
+      };
+      const minTreeValue = (root) => {
+        if (root.left) {
+          return minTreeValue(root.left);
+        }
+        return root.value;
+      };
+
+      const root = new Tree();
+      [8, 4, 2, 1, 3, 6, 5, 7, 12, 10, 9, 11, 14, 13, 15]
+        // .sort()
+        .forEach((item) => {
+          root.addNode(item);
+        });
+      //   root.depthFirstTraversal();
+      //   root.reverse();
+      //   console.log(root);
+      //   root.depthFirstTraversal();
+      //   root.removeNode(11);
+      root.depthFirstTraversal();
+      root.breadthFirstTraversal();
+      console.log(root);
+    </script>
+  </body>
+</html>

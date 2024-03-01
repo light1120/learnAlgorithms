@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script type="module">
+    // 反转数组
+    const arr1 = [1, 2, 3, 4, 5, 6, 7];
+    const reverseArr = function (arr) {
+      const len = arr.length;
+      for (let i = 0; i <= len / 2; i++) {
+        [arr[i], arr[len - 1 - i]] = [arr[len - 1 - i], arr[i]];
+      }
+      return arr;
+    };
+    console.log(reverseArr(arr1));
+  </script>
+</html>

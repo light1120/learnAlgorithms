@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      // JS实现一个带并发限制的异步调度器Scheduler，
+      // 保证同时运行的任务最多有两个。
+      // 完善代码中Scheduler类，
+      // 使得以下程序能正确输出
+
+      class Scheduler {
+        constructor() {
+          this.count = 2;
+          this.queue = [];
+          this.running = 0;
+        }
+
+        add1(task) {
+          return new Promise((resolve, reject) => {
+            const runTask = async (task) => {
+              this.running++;
+              await task();
+              this.running--;
+              if (this.queue.length > 0) {
+                const nextTask = this.queue.shift();
+                runTask(nextTask);
+              }
+            };
+
+            if (this.running < this.count) {
+              runTask(task).then(resolve);
+            } else {
+              this.queue.push(() => runTask(task).then(resolve));
+            }
+          });
+        }
+
+        add(task) {
+          return new Promise((resolve, reject) => {
+            if (this.running < this.count) {
+              this.runTask(task).then(resolve);
+            } else {
+              this.queue.push(() => {
+                this.runTask(task).then(resolve);
+              });
+            }
+          });
+        }
+
+        async runTask(task) {
+          this.running++;
+          const res = await task();
+          this.running--;
+          if (this.queue.length > 0) {
+            const nextTask = this.queue.shift();
+            nextTask();
+          }
+        }
+      }
+
+      const timeout = (time) =>
+        new Promise((resolve) => {
+          setTimeout(resolve, time);
+        });
+
+      const scheduler = new Scheduler();
+      const addTask = (time, order) => {
+        scheduler.add(() => timeout(time)).then(() => console.log(order));
+      };
+
+      addTask(1000, "1");
+      addTask(500, "2");
+      addTask(300, "3");
+      addTask(400, "4");
+      // output: 2 3 1 4
+
+      // 一开始，1、2两个任务进入队列
+      // 500ms时，2完成，输出2，任务3进队
+      // 800ms时，3完成，输出3，任务4进队
+      // 1000ms时，1完成，输出1
+      // 1200ms时，4完成，输出4
+    </script>
+  </body>
+</html>

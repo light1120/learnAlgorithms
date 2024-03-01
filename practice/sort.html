@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script type="module">
+    const BubbleSort1 = function (arr) {
+      const len = arr.length;
+      for (let i = 0; i < len; i++) {
+        for (let j = i + 1; j < len; j++) {
+          if (arr[i] > arr[j]) {
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+          }
+        }
+      }
+      return arr;
+    };
+    // 冒泡, 相邻2个比较
+    // 每次大循环之后，最后的一个就是最大数
+    const BubbleSort = function (arr) {
+      const len = arr.length;
+      for (let i = 0; i < len; i++) {
+        for (let j = 0; j < len - i; j++) {
+          if (arr[j] > arr[j + 1]) {
+            [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+          }
+        }
+      }
+      return arr;
+    };
+    // 打牌的时候，抓牌之后插入的算法
+    // 每次小循环，找到插入的位置，break , 然后插入。
+    const InsertSort = function (arr) {
+      const len = arr.length;
+      const newArr = [arr[0]];
+      for (let i = 1; i < len; i++) {
+        let curItem = arr[i];
+        let position = 0;
+        for (let j = i - 1; j >= 0; j--) {
+          // 挨个比牌
+          if (curItem < newArr[j]) {
+            // 抓的牌小，大牌往后移位
+            newArr[j + 1] = newArr[j];
+            // 插到到大牌前面
+            position = j;
+          } else {
+            // 抓的牌比前面都大，就放后面
+            position = j + 1;
+            break;
+          }
+        }
+        newArr[position] = curItem;
+      }
+      return newArr;
+    };
+    // 2分法，[...smallArr,base,...bigArr]
+    const QuickSort = function (arr) {
+      const len = arr.length;
+      if (len <= 1) {
+        return arr;
+      }
+      const baseItem = arr[Math.ceil(len / 2) - 1];
+      const smallArr = [];
+      const bigArr = [];
+      for (let i = 0; i < len; i++) {
+        if (arr[i] > baseItem) {
+          bigArr.push(arr[i]);
+        } else if (arr[i] < baseItem) {
+          smallArr.push(arr[i]);
+        }
+      }
+      return [...QuickSort(smallArr), baseItem, ...QuickSort(bigArr)];
+    };
+    console.log("bubble sort1:", BubbleSort1([3, 1, 41, 5, 2, 64, 23, 4]));
+    console.log("bubble sort:", BubbleSort([3, 1, 41, 5, 2, 64, 23, 4]));
+    console.log("insert sort:", InsertSort([3, 1, 41, 5, 2, 64, 23, 4]));
+    console.log("quick sort:", QuickSort([3, 1, 41, 5, 2, 64, 23, 4]));
+  </script>
+</html>

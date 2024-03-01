@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body></body>
+  <script>
+    // 队列 ， 先进先出
+    class Queue {
+      #size = 0;
+      head = null;
+      tail = null;
+
+      enqueue(data) {
+        const node = {
+          data,
+          next: null,
+        };
+        // 入队列， 修改 tail 即可
+        if (!this.head) {
+          this.head = this.tail = node;
+        } else {
+          this.tail.next = node;
+          this.tail = node;
+        }
+        this.#size++;
+        return this;
+      }
+
+      dequeue() {
+        if (!this.head) {
+          console.log("queue is empty");
+          return null;
+        }
+        const node = this.head;
+        if (!node.next) {
+          this.head = this.tail = null;
+        } else {
+          this.head = node.next;
+        }
+        this.#size--;
+        return node.data;
+      }
+
+      reverse() {
+        if (!this.head) {
+          return null;
+        }
+        // 用递归， 先出列，缓存所有节点，然后再入列所有节点
+        const data = this.dequeue();
+        this.reverse();
+        this.enqueue(data);
+      }
+    }
+
+    const MyQueue = new Queue();
+    MyQueue.enqueue(1).enqueue(2).enqueue(3).enqueue(4).enqueue(5).enqueue(6);
+  </script>
+</html>

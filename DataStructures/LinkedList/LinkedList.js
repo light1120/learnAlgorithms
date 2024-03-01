@@ -54,6 +54,10 @@ class LinkedList {
     this.head = node.next;
 
     this.size -= 1;
+    if (this.isEmpty) {
+      this.head = null;
+      this.tail = null;
+    }
     return node.value;
   }
 
@@ -61,7 +65,25 @@ class LinkedList {
     if (this.isEmpty) {
       throw Error("LinkedList is empty");
     }
-    const node = this.tail;
-    
+    let curNode = this.tail;
+
+    if (this.size == 1) {
+      this.size = 0;
+    } else {
+      while (curNode.next.next) {
+        curNode = curNode.next;
+      }
+      curNode.next = null;
+      this.tail = curNode;
+      curNode = curNode.next;
+      this.size -= 1;
+    }
+
+    if (this.isEmpty) {
+      this.head = null;
+      this.tail = null;
+    }
+
+    return curNode;
   }
 }

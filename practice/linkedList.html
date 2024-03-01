@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script>
+      class Node {
+        constructor(value) {
+          this.value = value;
+          this.next = null;
+        }
+      }
+      class LinkedList {
+        head = null;
+        tail = null;
+        size = 0;
+
+        addLast(data) {
+          const node = new Node(data);
+          if (!this.head) {
+            this.head = this.tail = node;
+          } else {
+            this.tail.next = node;
+            this.tail = node;
+          }
+          this.size++;
+          return this;
+        }
+        addFirst(data) {
+          const node = new Node(data);
+          if (!this.head) {
+            this.head = this.tail = node;
+          } else {
+            node.next = this.head;
+            this.head = node;
+          }
+          this.size++;
+          return this;
+        }
+        removeLast() {
+          if (!this.head) {
+            console.log("LinkedList is empty");
+            return null;
+          }
+          let node = this.head;
+          if (!node.next) {
+            this.head = this.tail = null;
+          } else {
+            while (node.next.next) {
+              node = node.next;
+            }
+            //找到倒数第2个，赋值给tail
+            this.tail = node;
+            // 下一个就是目标值
+            node = node.next;
+            this.tail.next = null;
+          }
+          this.size--;
+          return node.value;
+        }
+        removeFirst() {
+          if (!this.head) {
+            console.log("LinkedList is empty");
+            return null;
+          }
+          const node = this.head;
+          if (!node.next) {
+            this.head = this.tail = null;
+          } else {
+            this.head = node.next;
+          }
+          this.size--;
+          return node.data;
+        }
+        reverse() {
+          let newHead = null;
+          let curItem = this.head;
+          while (curItem != null) {
+            //存储下一个
+            const next = curItem.next;
+            //向前插入node
+            curItem.next = newHead;
+            newHead = curItem;
+            // 下一次插入起点
+            curItem = next;
+          }
+          this.tail = this.head;
+          this.head = newHead;
+        }
+        middle() {
+          let slow = this.head;
+          let fast = slow.next;
+          while (slow && fast) {
+            slow = slow.next;
+            fast = fast.next.next;
+          }
+          return slow.value;
+        }
+        isCircle() {
+          let slow = this.head;
+          let fast = slow.next;
+          while (slow && fast) {
+            if (slow.value == fast.value) return true;
+            slow = slow.next;
+            fast = fast.next.next;
+          }
+          return fast;
+        }
+      }
+      const reverseList = (head) => {
+        let newHead = null;
+        let next = null;
+        while (head) {
+          next = head.next;
+
+          const curNode = head;
+          curNode.next = newHead;
+          newHead = curNode;
+
+          head = next;
+        }
+        return newHead;
+      };
+      const List = new LinkedList();
+
+      List.addLast(1)
+        .addLast(2)
+        .addLast(3)
+        .addLast(4)
+        .addLast(5)
+        .addLast(6)
+        .addFirst(-1)
+        .addFirst(-2)
+        .addFirst(-3);
+    </script>
+  </body>
+</html>
